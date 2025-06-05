@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "de786170-1561-432a-a02d-830c1f5442d1",
+		"name": "JSON Placeholder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "43311267",
+		"_collection_link": "https://www.postman.com/warped-meteor-377616/workspace/my-workspace/collection/43311267-de786170-1561-432a-a02d-830c1f5442d1?action=share&source=collection_link&creator=43311267"
+	},
+	"item": [
+		{
+			"name": "GET Posts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseUrlJson}}/posts"
+			},
+			"response": []
+		},
+		{
+			"name": "GET Users",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let resBody;\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"    resBody = pm.response.json();\r",
+							"    console.log(resBody)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is an array and contains required fields in each user object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"    \r",
+							"    responseData.forEach(user => {\r",
+							"        pm.expect(user).to.be.an('object');\r",
+							"        pm.expect(user).to.have.all.keys('id', 'name', 'username', 'email', 'address', 'phone', 'website', 'company');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Email is in a valid format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(user => {\r",
+							"        pm.expect(user.email).to.exist.and.to.be.a('string').and.to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, \"Email format is invalid\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate that the address object contains the required fields\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"    \r",
+							"    responseData.forEach(user => {\r",
+							"        pm.expect(user.address).to.be.an('object').that.includes.all.keys('street', 'suite', 'city', 'zipcode', 'geo');\r",
+							"        pm.expect(user.address.geo).to.be.an('object').that.includes.all.keys('lat', 'lng');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Weryfikacja ilości zwróconych użytkowników\", function() {\r",
+							"    pm.expect(resBody.length).eql(10)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Weryfikacja imienia użytkownika\", function() {\r",
+							"    pm.expect(resBody[0].name).to.have.length.greaterThan(3)\r",
+							"    pm.expect(resBody[0].name).contains(\"Graham\")\r",
+							"\r",
+							"    pm.globals.set(\"imie\", resBody[0].name)\r",
+							"    pm.environment.set(\"phone\", resBody[0].phone)\r",
+							"    pm.collectionVariables.set(\"websiteUrl\", resBody[0].website)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseUrlJson}}/users"
+			},
+			"response": []
+		},
+		{
+			"name": "GET Comments",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{baseUrlJson}}/comments"
+			},
+			"response": []
+		},
+		{
+			"name": "POST Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Przykładowy wpis\",\r\n    \"body\": \"Opis testowy wpisu\",\r\n    \"userId\": 7\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrlJson}}/posts"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Udate Post",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"{{postTitle}}\",\r\n    \"body\": \"bar\",\r\n    \"userId\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrlJson}}/posts/64"
+			},
+			"response": [
+				{
+					"name": "Przykład dla zapytania PUT",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"{{postTitle}}\",\r\n    \"body\": \"bar\",\r\n    \"userId\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrlJson}}/posts/64"
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "DELETE Post",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "{{baseUrlJson}}/posts/64"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "websiteUrl",
+			"value": ""
+		}
+	]
+}
